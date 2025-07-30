@@ -1,17 +1,21 @@
-import { Request, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 import { userServices } from "./user.service"
+import { sendResponse } from "../../utils/sendResponse"
+import httpStatus from "http-status-codes"
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = await userServices.createUser(req.body)
-        res.json({
+        sendResponse(res, {
+            statusCode: httpStatus.CREATED,
+            messaage: "created a new user!!",
             success: true,
-            message: "created a new user",
-            user
+            data: user
         })
     }
     catch (error) {
-        console.log(error);
+        // console.log(error);
+        next(error) // now this err will handle by global error handler
     }
 }
 export const userControllers = {
