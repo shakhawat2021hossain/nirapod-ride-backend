@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { envVars } from "./app/config/env";
 import app from "./app";
+import { adminSeed } from "./app/utils/adminSeed";
 
 const port = envVars.PORT || 5000;
 const startServer = async () => {
@@ -18,4 +19,8 @@ const startServer = async () => {
     }
 }
 
-startServer()
+(async () => {
+    await startServer()
+    await adminSeed()
+
+})()

@@ -8,5 +8,7 @@ export const envVars = {
     NODE_ENV: process.env.NODE_ENV,
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET as string,
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET as string,
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
+    ADMIN_PASS: process.env.ADMIN_PASS as string,
 
 }
