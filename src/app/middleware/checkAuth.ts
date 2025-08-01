@@ -14,6 +14,7 @@ export const checkAuth = (...authRoles: string[]) => async (req: Request, res: R
             throw new AppError(403, "No access token found!")
         }
 
+        // here must be use await, either if block will be true
         const isVerified = await verifyToken(token, envVars.ACCESS_TOKEN_SECRET) as JwtPayload;
         // console.log(isVerified);
         if (!authRoles.includes(isVerified.role)) {

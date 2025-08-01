@@ -33,5 +33,6 @@ export interface IUser {
     address?: string;
     isVerified?: boolean;
     isOnline?: boolean;
+    isApproved?: boolean;
     behicleInfo?: IVehicle;
 }
