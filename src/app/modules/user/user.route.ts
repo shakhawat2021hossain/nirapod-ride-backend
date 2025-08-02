@@ -6,6 +6,7 @@ import { Role } from "./user.interface";
 const router =  Router()
 router.post('/create', userControllers.createUser)
 router.get('/all-user', userControllers.getAllUser)
+router.patch('/become-driver', checkAuth(Role.RIDER), userControllers.becomeDriver)
 router.patch('/:id', checkAuth(...Object.values(Role)), userControllers.updateUser)
 
 export const userRoutes = router

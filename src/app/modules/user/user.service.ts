@@ -1,5 +1,5 @@
 import AppError from "../../utils/AppError"
-import { IAuthProvider, IUser, Role } from "./user.interface"
+import { DriverRequestStatus, IAuthProvider, IUser, IVehicle, Role } from "./user.interface"
 import { User } from "./user.model"
 import httpStatus from "http-status-codes"
 import bcrypt from "bcryptjs"
@@ -48,8 +48,46 @@ const getAllUser = async () => {
     const users = await User.find({})
     return users
 }
+
+
+const becomeDriver = async (decodedToken: JwtPayload, payload: Partial<IVehicle>) => {
+    // console.log(decodedToken);
+    if (decodedToken.role !== Role.RIDER) {
+        throw new AppError(httpStatus.BAD_REQUEST, "You are not authorized")
+    }
+
+    // const update = {
+    //     role: Role.DRIVER,
+    //     vehicleInfo: {
+    //         model: payload.vehicleInfo?.model,
+    //         plateNum: payload.vehicleInfo?.plateNum,
+    //         type: payload.vehicleInfo?.type
+    //     }
+    // }
+
+    const result = await User.findByIdAndUpdate(
+        decodedToken.userId,
+        {
+            driverRequest: {
+                status: DriverRequestStatus.PENDING,
+                vehicleInfo: payload,
+                requestedAt: new Date(),
+            },
+        },
+        {
+            new: true,
+            runValidators: true,
+            returnDocument: "after"
+        }
+    ).select("-password");
+return result;
+
+
+}
+
 export const userServices = {
     createUser,
     getAllUser,
-    updateUser
+    updateUser,
+    becomeDriver
 }

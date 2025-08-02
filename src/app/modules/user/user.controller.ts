@@ -40,8 +40,20 @@ const getAllUser = catchAsync(async (req: Request, res: Response) => {
 })
 
 
+const becomeDriver = catchAsync(async (req: Request, res: Response) => {
+    console.log("body",req.body);
+    const driver = await userServices.becomeDriver(req.user as JwtPayload, req.body)
+    sendResponse(res, {
+        success: true,
+        messaage: "updated role to driver!!!",
+        statusCode: httpStatus.OK,
+        data: driver
+    })
+})
+
 export const userControllers = {
     createUser,
     getAllUser,
-    updateUser
+    updateUser,
+    becomeDriver
 }

@@ -9,17 +9,38 @@ export enum Availability {
     BLOCKED = "BLOCKED"
 }
 
+export enum vehicleType {
+    CAR = "CAR",
+    BIKE = "BIKE",
+    CNG = "BIKR",
+    AUTO = "AUTO"
+}
+
 export interface IVehicle {
-    type: "car" | "cng" | "bike" | "auto";
+    type: vehicleType;
     model: string;
     plateNum: string;
     // passengerCapacity: number; 
 }
 
-export interface IAuthProvider{
+export enum DriverRequestStatus {
+    PENDING = "pending",
+    APPROVED = "approved",
+    REJECTED = "rejected",
+
+}
+
+export interface IDriverRequest {
+    status: DriverRequestStatus;
+    vehicleInfo: IVehicle;
+    requestedAt: Date;
+
+}
+export interface IAuthProvider {
     provider: "credentials" | "google";
     providerId: string
 }
+
 export interface IUser {
     name: string;
     email: string;
@@ -34,5 +55,5 @@ export interface IUser {
     isVerified?: boolean;
     isOnline?: boolean;
     isApproved?: boolean;
-    behicleInfo?: IVehicle;
+    driverRequest?: IDriverRequest;
 }
