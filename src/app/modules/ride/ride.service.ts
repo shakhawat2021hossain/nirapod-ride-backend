@@ -41,6 +41,10 @@ const getAllRide = async() =>{
     return rides
 }
 
+// const acceptRide = async() =>{
+
+// }
+
 export const rideServices = {
     requestRide,
     getAllRide

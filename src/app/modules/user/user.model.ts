@@ -45,7 +45,13 @@ const driverRequestSchema = new Schema<IDriverRequest>(
       default: DriverRequestStatus.PENDING,
     },
     vehicleInfo: vehicleSchema,
-    requestedAt: { type: Date }
+    requestedAt: { type: Date },
+    approvedAt: { type: Date },
+    approvedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    }
   },
   {
     _id: false,
@@ -68,7 +74,7 @@ const userSchema = new Schema<IUser>(
     address: { type: String },
     isDeleted: { type: Boolean, default: false },
     isOnline: { type: Boolean, default: false },
-    // vehicleInfo: vehicleSchema,
+    vehicleInfo: vehicleSchema,
     availability: {
       type: String,
       enum: Object.values(Availability),

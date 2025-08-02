@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export enum Role {
     ADMIN = "ADMIN",
     RIDER = "RIDER",
@@ -34,6 +36,8 @@ export interface IDriverRequest {
     status: DriverRequestStatus;
     vehicleInfo: IVehicle;
     requestedAt: Date;
+    approvedAt: Date;
+    approvedBy: Types.ObjectId
 
 }
 export interface IAuthProvider {
@@ -56,4 +60,5 @@ export interface IUser {
     isOnline?: boolean;
     isApproved?: boolean;
     driverRequest?: IDriverRequest;
+    vehicleInfo?: IVehicle
 }

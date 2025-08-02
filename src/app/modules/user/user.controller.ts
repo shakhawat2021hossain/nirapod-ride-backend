@@ -41,7 +41,7 @@ const getAllUser = catchAsync(async (req: Request, res: Response) => {
 
 
 const becomeDriver = catchAsync(async (req: Request, res: Response) => {
-    console.log("body",req.body);
+    // console.log("body",req.body);
     const driver = await userServices.becomeDriver(req.user as JwtPayload, req.body)
     sendResponse(res, {
         success: true,
@@ -51,9 +51,37 @@ const becomeDriver = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+
+const getDriverRequests = catchAsync(async (req: Request, res: Response) => {
+    // console.log("body",req.body);
+    const result = await userServices.getDriverRequests()
+    sendResponse(res, {
+        success: true,
+        messaage: "Retrived all user that request to be a driver!!!",
+        statusCode: httpStatus.OK,
+        data: result
+    })
+})
+
+
+const approveDriverRequest = catchAsync(async (req: Request, res: Response) => {
+    console.log("params", req.params);
+    const result = await userServices.approveDriverRequest(req.params.id, req.user as JwtPayload)
+    sendResponse(res, {
+        success: true,
+        messaage: "Update role to driver!!!",
+        statusCode: httpStatus.ACCEPTED,
+        data: result
+    })
+})
+
+
+
 export const userControllers = {
     createUser,
     getAllUser,
     updateUser,
-    becomeDriver
+    becomeDriver,
+    getDriverRequests,
+    approveDriverRequest
 }

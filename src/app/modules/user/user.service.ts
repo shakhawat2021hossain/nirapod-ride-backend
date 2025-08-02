@@ -56,15 +56,6 @@ const becomeDriver = async (decodedToken: JwtPayload, payload: Partial<IVehicle>
         throw new AppError(httpStatus.BAD_REQUEST, "You are not authorized")
     }
 
-    // const update = {
-    //     role: Role.DRIVER,
-    //     vehicleInfo: {
-    //         model: payload.vehicleInfo?.model,
-    //         plateNum: payload.vehicleInfo?.plateNum,
-    //         type: payload.vehicleInfo?.type
-    //     }
-    // }
-
     const result = await User.findByIdAndUpdate(
         decodedToken.userId,
         {
@@ -80,7 +71,36 @@ const becomeDriver = async (decodedToken: JwtPayload, payload: Partial<IVehicle>
             returnDocument: "after"
         }
     ).select("-password");
-return result;
+    return result;
+
+
+}
+
+const getDriverRequests = async () => {
+    const pending = await User.find({ "driverRequest.status": "pending" })
+        .select("name email driverRequest")
+        .sort({ "driverRequest.requestedAt": -1 })
+    return pending
+}
+
+const approveDriverRequest = async (id: string, decodedToken: JwtPayload) => {
+    const user = await User.findById(id)
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, "User not found!")
+    }
+
+    if (!user.driverRequest || user.driverRequest.status !== DriverRequestStatus.PENDING) {
+        throw new AppError(httpStatus.BAD_REQUEST, "No pending driver request to approve!")
+    }
+
+    user.role = Role.DRIVER
+    user.vehicleInfo = user.driverRequest.vehicleInfo
+    user.driverRequest.approvedAt = new Date();
+    user.driverRequest.approvedBy = decodedToken.userId
+    user.driverRequest.status = DriverRequestStatus.APPROVED;
+
+
+    await user.save();
 
 
 }
@@ -89,5 +109,7 @@ export const userServices = {
     createUser,
     getAllUser,
     updateUser,
-    becomeDriver
+    becomeDriver,
+    getDriverRequests,
+    approveDriverRequest
 }
