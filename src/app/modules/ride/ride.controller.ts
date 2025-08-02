@@ -27,7 +27,20 @@ const getAllRide = catchAsync(async (req: Request, res: Response) =>{
     })
 })
 
+/* DRIVER */
+
+const getAvailableRides = catchAsync(async (req: Request, res: Response) =>{
+    const rides = await rideServices.getAvailableRides()
+    sendResponse(res, {
+        messaage: "retrived all available rides",
+        success: true,
+        statusCode: httpStatus.OK,
+        data: rides
+    })
+})
+
 export const rideControllers = {
     requestRide,
-    getAllRide
+    getAllRide,
+    getAvailableRides
 }

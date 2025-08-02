@@ -41,11 +41,16 @@ const getAllRide = async() =>{
     return rides
 }
 
-// const acceptRide = async() =>{
 
-// }
+
+/* DRIVER */
+const getAvailableRides = async() =>{
+    const rides = await Ride.find({status: "requested"})
+    return rides
+}
 
 export const rideServices = {
     requestRide,
-    getAllRide
+    getAllRide,
+    getAvailableRides
 }
