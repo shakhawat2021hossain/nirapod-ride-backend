@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
-import { IRide } from "./ride.interface";
+import { IRide, RideStatus } from "./ride.interface";
+import { Role } from "../user/user.interface";
 
 const rideSchema = new Schema<IRide>({
     rider: {
@@ -15,12 +16,12 @@ const rideSchema = new Schema<IRide>({
     endLocation: { type: String, required: true },
     fare: { type: Number, required: true },
     isCancelled: { type: Boolean, default: false },
-    cancelledBy: { type: String, enum: ["rider", "driver", "admin"] },
+    cancelledBy: { type: String, enum: Object.values(Role) },
     cancelReason: { type: String },
     status: {
         type: String,
-        enum: ["requested", "accepted", "picked_up", "in_transit", "completed", "cancelled"],
-        default: "requested",
+        enum: Object.values(RideStatus),
+        default: RideStatus.REQUESTED,
     },
     requestedAt: Date,
     acceptedAt: Date,
@@ -30,7 +31,8 @@ const rideSchema = new Schema<IRide>({
 
 },
     {
-        timestamps: true
+        timestamps: true,
+        // versionKey: false
     })
 
 export const Ride = model("Ride", rideSchema)

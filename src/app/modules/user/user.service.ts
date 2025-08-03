@@ -1,5 +1,5 @@
 import AppError from "../../utils/AppError"
-import { DriverRequestStatus, IAuthProvider, IUser, IVehicle, Role } from "./user.interface"
+import { Availability, DriverRequestStatus, IAuthProvider, IUser, IVehicle, Role } from "./user.interface"
 import { User } from "./user.model"
 import httpStatus from "http-status-codes"
 import bcrypt from "bcryptjs"
@@ -99,11 +99,37 @@ const approveDriverRequest = async (id: string, decodedToken: JwtPayload) => {
     user.driverRequest.approvedBy = decodedToken.userId
     user.driverRequest.status = DriverRequestStatus.APPROVED;
 
-
     await user.save();
 
+    return user;
+}
+
+
+const setAvailabilityStatus = async (decodedToken: JwtPayload) => {
+    if (decodedToken.role !== Role.DRIVER) {
+        throw new AppError(httpStatus.BAD_REQUEST, "You cant set availaibility status!!")
+    }
+
+    const driver = await User.findById(decodedToken.userId)
+
+    if (!driver) {
+        throw new AppError(httpStatus.NOT_FOUND, "Driver not found!!");
+    }
+
+    if (!driver.isApproved) {
+        throw new AppError(httpStatus.FORBIDDEN, "Driver not approved yet!!");
+    }
+
+    driver.availability = driver.availability === Availability.ONLINE
+        ? Availability.OFFLINE
+        : Availability.ONLINE
+
+    await driver.save()
+    return driver
 
 }
+
+
 
 export const userServices = {
     createUser,
@@ -111,5 +137,6 @@ export const userServices = {
     updateUser,
     becomeDriver,
     getDriverRequests,
-    approveDriverRequest
+    approveDriverRequest,
+    setAvailabilityStatus
 }

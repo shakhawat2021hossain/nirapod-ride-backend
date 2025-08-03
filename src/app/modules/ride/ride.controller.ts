@@ -29,6 +29,7 @@ const getAllRide = catchAsync(async (req: Request, res: Response) =>{
 
 /* DRIVER */
 
+
 const getAvailableRides = catchAsync(async (req: Request, res: Response) =>{
     const rides = await rideServices.getAvailableRides()
     sendResponse(res, {
@@ -38,9 +39,19 @@ const getAvailableRides = catchAsync(async (req: Request, res: Response) =>{
         data: rides
     })
 })
+const acceptRide = catchAsync(async (req: Request, res: Response) =>{
+    const result = await rideServices.acceptRide(req.params.id, req.user?.userId)
+    sendResponse(res, {
+        messaage: "Ride is accepted by Driver!",
+        success: true,
+        statusCode: httpStatus.OK,
+        data: result
+    })
+})
 
 export const rideControllers = {
     requestRide,
     getAllRide,
-    getAvailableRides
+    getAvailableRides,
+    acceptRide
 }

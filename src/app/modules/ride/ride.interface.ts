@@ -1,4 +1,14 @@
 import { Types } from "mongoose";
+import { Role } from "../user/user.interface";
+
+export enum RideStatus {
+  REQUESTED = "requested",
+  ACCEPTED = "accepted",
+  PICKED_UP = "picked_up",
+  IN_TRANSIT = "in_transit",
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
+}
 
 export interface IRide {
     rider: Types.ObjectId;
@@ -6,9 +16,9 @@ export interface IRide {
     startLocation: string;
     endLocation: string;
     fare: number;
-    status?: "requested" | "accepted" | "picked_up" | "in_transit" | "completed" | "cancelled";
+    status?: RideStatus;
     isCancelled?: boolean;
-    cancelledBy?: "rider" | "driver" | "admin";
+    cancelledBy?: Role;
     cancelReason?: string;
     requestedAt?: Date;
     acceptedAt?: Date;

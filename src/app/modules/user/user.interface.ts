@@ -7,19 +7,19 @@ export enum Role {
 }
 
 export enum Availability {
-    ACTIVE = "ACTIVE",
-    BLOCKED = "BLOCKED"
+    ONLINE = "ONLINE",
+    OFFLINE = "OFFLINE"
 }
 
-export enum vehicleType {
-    CAR = "CAR",
-    BIKE = "BIKE",
-    CNG = "BIKR",
-    AUTO = "AUTO"
+export enum VehicleType {
+    CAR = "car",
+    BIKE = "bike",
+    CNG = "cng",
+    AUTO = "auto"
 }
 
 export interface IVehicle {
-    type: vehicleType;
+    type: VehicleType;
     model: string;
     plateNum: string;
     // passengerCapacity: number; 
@@ -36,8 +36,8 @@ export interface IDriverRequest {
     status: DriverRequestStatus;
     vehicleInfo: IVehicle;
     requestedAt: Date;
-    approvedAt: Date;
-    approvedBy: Types.ObjectId
+    approvedAt?: Date;
+    approvedBy?: Types.ObjectId
 
 }
 export interface IAuthProvider {
@@ -57,7 +57,7 @@ export interface IUser {
     auths?: IAuthProvider[];
     address?: string;
     isVerified?: boolean;
-    isOnline?: boolean;
+    // isOnline?: boolean;
     isApproved?: boolean;
     driverRequest?: IDriverRequest;
     vehicleInfo?: IVehicle

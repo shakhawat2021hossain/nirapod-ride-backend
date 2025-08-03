@@ -7,6 +7,7 @@ import {
   IUser,
   IVehicle,
   Role,
+  VehicleType,
 } from "./user.interface";
 
 
@@ -26,7 +27,7 @@ const vehicleSchema = new Schema<IVehicle>(
     model: { type: String, required: true },
     type: {
       type: String,
-      enum: ["car", "cng", "bike", "auto"],
+      enum: Object.values(VehicleType),
       required: true,
     },
     plateNum: { type: String, required: true },
@@ -73,12 +74,10 @@ const userSchema = new Schema<IUser>(
     picture: { type: String },
     address: { type: String },
     isDeleted: { type: Boolean, default: false },
-    isOnline: { type: Boolean, default: false },
     vehicleInfo: vehicleSchema,
     availability: {
       type: String,
-      enum: Object.values(Availability),
-      default: Availability.ACTIVE,
+      enum: Object.values(Availability)
     },
     isVerified: { type: Boolean, default: false },
     isApproved: { type: Boolean, default: false },

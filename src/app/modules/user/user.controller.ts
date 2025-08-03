@@ -65,11 +65,23 @@ const getDriverRequests = catchAsync(async (req: Request, res: Response) => {
 
 
 const approveDriverRequest = catchAsync(async (req: Request, res: Response) => {
-    console.log("params", req.params);
+    // console.log("params", req.params);
     const result = await userServices.approveDriverRequest(req.params.id, req.user as JwtPayload)
     sendResponse(res, {
         success: true,
         messaage: "Update role to driver!!!",
+        statusCode: httpStatus.ACCEPTED,
+        data: result
+    })
+})
+
+
+const setAvailabilityStatus = catchAsync(async (req: Request, res: Response) => {
+   
+    const result = await userServices.setAvailabilityStatus(req.user as JwtPayload)
+    sendResponse(res, {
+        success: true,
+        messaage: "Updated driver availability status!!!",
         statusCode: httpStatus.ACCEPTED,
         data: result
     })
@@ -83,5 +95,6 @@ export const userControllers = {
     updateUser,
     becomeDriver,
     getDriverRequests,
-    approveDriverRequest
+    approveDriverRequest,
+    setAvailabilityStatus
 }

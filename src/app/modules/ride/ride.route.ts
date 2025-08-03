@@ -8,5 +8,6 @@ const router = Router()
 router.post('/request', checkAuth(Role.RIDER), rideControllers.requestRide)
 router.get('/all-rides', checkAuth(Role.ADMIN), rideControllers.getAllRide)
 router.get('/available-rides', checkAuth(Role.DRIVER), rideControllers.getAvailableRides)
+router.patch('/:id/accept-ride', checkAuth(Role.DRIVER), rideControllers.acceptRide)
 
 export const rideRoutes = router
