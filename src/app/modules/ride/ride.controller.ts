@@ -27,6 +27,17 @@ const getAllRide = catchAsync(async (req: Request, res: Response) =>{
     })
 })
 
+
+const cancelRide = catchAsync(async (req: Request, res: Response) =>{
+    const result = await rideServices.cancelRide(req.params.id, req.user?.userId)
+    sendResponse(res, {
+        messaage: "Ride is cancelled!",
+        success: true,
+        statusCode: httpStatus.OK,
+        data: result
+    })
+})
+
 /* DRIVER */
 
 
@@ -60,15 +71,19 @@ const updateRideStatus = catchAsync(async (req: Request, res: Response) =>{
 })
 
 
-const cancelRide = catchAsync(async (req: Request, res: Response) =>{
-    const result = await rideServices.cancelRide(req.params.id, req.user?.userId)
+const earningsHistory = catchAsync(async (req: Request, res: Response) =>{
+    const result = await rideServices.earningsHistory(req.user?.userId)
+
     sendResponse(res, {
-        messaage: "Ride is cancelled!",
+        messaage: "Earning Histroey!",
         success: true,
         statusCode: httpStatus.OK,
         data: result
     })
 })
+
+
+
 
 export const rideControllers = {
     requestRide,
@@ -76,5 +91,6 @@ export const rideControllers = {
     getAvailableRides,
     acceptRide,
     updateRideStatus,
-    cancelRide
+    cancelRide,
+    earningsHistory
 }

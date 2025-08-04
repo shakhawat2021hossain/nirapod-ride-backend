@@ -39,17 +39,17 @@ const requestRide = async (payload: IRide, decodedToken: JwtPayload) => {
 
 }
 
-const cancelRide = async(rideId: string, riderId: string) =>{
+const cancelRide = async (rideId: string, riderId: string) => {
     const ride = await Ride.findById(rideId)
-    if(!ride){
+    if (!ride) {
         throw new AppError(httpStatus.NOT_FOUND, "No ride found!")
     }
 
-    if(ride.status === RideStatus.ACCEPTED || ride.status === RideStatus.IN_TRANSIT || ride.status === RideStatus.PICKED_UP || ride.status === RideStatus.COMPLETED){
+    if (ride.status === RideStatus.ACCEPTED || ride.status === RideStatus.IN_TRANSIT || ride.status === RideStatus.PICKED_UP || ride.status === RideStatus.COMPLETED) {
         throw new AppError(httpStatus.BAD_REQUEST, "Ride cant be cancelled at this moment!")
     }
 
-    if(riderId !== ride.rider.toString()){
+    if (riderId !== ride.rider.toString()) {
         throw new AppError(httpStatus.BAD_REQUEST, "You are not allowed to cancelled other rides!")
     }
 
@@ -141,10 +141,50 @@ const updateRideStatus = async (rideId: string, driverId: string, newStatus: Rid
 
 }
 
+const earningsHistory = async (driverId: string) => {
+    if (!Types.ObjectId.isValid(driverId)) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Invalid driver ID");
+    }
+
+    const match = {
+        driver: new Types.ObjectId(driverId),
+        status: RideStatus.COMPLETED,
+    };
+
+    const rides = await Ride.find(match)
+        .sort({ completedAt: -1 })
+        .select("startLocation endLocation fare completedAt")
+        .lean();
+
+    const totalAgg = await Ride.aggregate([
+        { $match: match },
+        {
+            $group: {
+                _id: "$driver",
+                total: { $sum: "$fare" },
+            },
+        },
+    ]);
+    // console.log(totalAgg);
+    const totalEarnings = totalAgg[0]?.total || 0;
+
+    return {
+        earnings: rides.map((ride) => ({
+            rideId: ride._id,
+            startLocation: ride.startLocation,
+            endLocation: ride.endLocation,
+            fare: ride.fare,
+            completedAt: ride.completedAt,
+        })),
+        totalEarnings,
+    };
+};
 
 
 
-/*========================================== ADMIN ===========================================*/
+
+
+/*================================= ADMIN ===================================*/
 
 
 const getAllRide = async () => {
@@ -159,16 +199,11 @@ export const rideServices = {
     getAvailableRides,
     acceptRide,
     updateRideStatus,
-    cancelRide
+    cancelRide,
+    earningsHistory
 }
 
-// //   createRide,
 //   getRideById,
 //   getMyRides,
-//   acceptRide,
-//   completeRide,
-//   cancelRide,
-//   getAvailableRides,
-//   getAllRides,
 //   getRiderRideHistory,
 //   getDriverRideHistory,
