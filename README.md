@@ -28,15 +28,15 @@ A **secure**, **role-based**, and **scalable backend API** for a ride-booking sy
 ## 🗂️ Project Structure 
 src/
 ├── app/
-├── ├── middlewares
-├── ├── config
-├── ├── utils
-├── ├── modules
-├──       ├── auth
-├──       ├── user
-├──       ├── ride
+│ ├── middlewares/
+│ ├── config/
+│ ├── utils/
+│ ├── modules/
+│ │ ├── auth/
+│ │ ├── user/
+│ │ ├── ride/
 ├── app.ts
-├── sever.ts
+├── server.ts
 
 
 ## 🧠 Core Concepts
@@ -74,18 +74,18 @@ src/
 2. **Clone repository**
  ```bash
    npm install
-  ```
+ ```
 3. **Create a .env file**
-   ```bash
+```bash
    PORT=5000
    MONGO_URI=<your-mongodb-connection-string>
    ACCESS_TOKEN_SECRET=<strong_jwt_secret>
    REFRESH_TOKEN_SECRET=<optional_if_using_refresh_tokens>
-   ```
+ ```
 4. Run the server
-   ```bash
+ ```bash
    npm run dev
-   ```
+ ```
 ## API Endpoints Summary
 
 ### Authentication
