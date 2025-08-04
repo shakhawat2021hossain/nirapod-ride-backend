@@ -6,6 +6,7 @@ import { Role } from "../user/user.interface"
 import { Ride } from "./ride.model"
 import { User } from "../user/user.model"
 import { Types } from "mongoose"
+/*================================= USER ====================================*/
 
 const requestRide = async (payload: IRide, decodedToken: JwtPayload) => {
 
@@ -38,14 +39,28 @@ const requestRide = async (payload: IRide, decodedToken: JwtPayload) => {
 
 }
 
-const getAllRide = async () => {
-    const rides = await Ride.find({})
-    return rides
+const cancelRide = async(rideId: string, riderId: string) =>{
+    const ride = await Ride.findById(rideId)
+    if(!ride){
+        throw new AppError(httpStatus.NOT_FOUND, "No ride found!")
+    }
+
+    if(ride.status === RideStatus.ACCEPTED || ride.status === RideStatus.IN_TRANSIT || ride.status === RideStatus.PICKED_UP || ride.status === RideStatus.COMPLETED){
+        throw new AppError(httpStatus.BAD_REQUEST, "Ride cant be cancelled at this moment!")
+    }
+
+    if(riderId !== ride.rider.toString()){
+        throw new AppError(httpStatus.BAD_REQUEST, "You are not allowed to cancelled other rides!")
+    }
+
+
+    ride.status = RideStatus.CANCELLED;
+    await ride.save()
 }
 
 
 
-/* DRIVER */
+/*================================= DRIVER ==============================*/
 const getAvailableRides = async () => {
     const rides = await Ride.find({ status: "requested" })
     return rides
@@ -58,8 +73,10 @@ const acceptRide = async (rideId: string, driverId: string) => {
         throw new AppError(httpStatus.NOT_FOUND, "No ride found")
     }
     if (ride.status !== RideStatus.REQUESTED) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Ride is not in requested state");
+        throw new AppError(httpStatus.BAD_REQUEST, "Ride is not in requested state!");
+        // it may in cancelled state, or any other
     }
+
 
     const driver = await User.findById(driverId);
     if (!driver) {
@@ -93,9 +110,9 @@ const updateRideStatus = async (rideId: string, driverId: string, newStatus: Rid
     if (!ride) {
         throw new AppError(httpStatus.NOT_FOUND, "Ride not found!");
     }
-    console.log(driverId);
+    // console.log(driverId);
     if (!driverId) {
-        throw new AppError(httpStatus.NOT_FOUND, "Ride not found!");
+        throw new AppError(httpStatus.NOT_FOUND, "No driver found for the ride!");
 
     }
 
@@ -115,10 +132,6 @@ const updateRideStatus = async (rideId: string, driverId: string, newStatus: Rid
             ride.status = RideStatus.COMPLETED;
             ride.completedAt = new Date();
             break;
-        case "cancelled":
-            ride.status = RideStatus.CANCELLED;
-            ride.cancelledAt = new Date();
-            break;
         default:
             throw new AppError(httpStatus.BAD_REQUEST, "Unsupported status!");
     }
@@ -128,10 +141,34 @@ const updateRideStatus = async (rideId: string, driverId: string, newStatus: Rid
 
 }
 
+
+
+
+/*========================================== ADMIN ===========================================*/
+
+
+const getAllRide = async () => {
+    const rides = await Ride.find({})
+    return rides
+}
+
+
 export const rideServices = {
     requestRide,
     getAllRide,
     getAvailableRides,
     acceptRide,
-    updateRideStatus
+    updateRideStatus,
+    cancelRide
 }
+
+// //   createRide,
+//   getRideById,
+//   getMyRides,
+//   acceptRide,
+//   completeRide,
+//   cancelRide,
+//   getAvailableRides,
+//   getAllRides,
+//   getRiderRideHistory,
+//   getDriverRideHistory,
