@@ -26,18 +26,19 @@ A **secure**, **role-based**, and **scalable backend API** for a ride-booking sy
 - Structured, modular codebase
 
 ## 🗂️ Project Structure 
+```plaintext
 src/
 ├── app/
-│ ├── middlewares/
-│ ├── config/
-│ ├── utils/
-│ ├── modules/
-│ │ ├── auth/
-│ │ ├── user/
-│ │ ├── ride/
+│   ├── middlewares/
+│   ├── config/
+│   ├── utils/
+│   ├── modules/
+│   │   ├── auth/
+│   │   ├── user/
+│   │   ├── ride/
 ├── app.ts
 ├── server.ts
-
+```
 
 ## 🧠 Core Concepts
 
