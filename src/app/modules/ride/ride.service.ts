@@ -87,9 +87,51 @@ const acceptRide = async (rideId: string, driverId: string) => {
     return ride;
 }
 
+
+const updateRideStatus = async (rideId: string, driverId: string, newStatus: RideStatus) => {
+    const ride = await Ride.findById(rideId)
+    if (!ride) {
+        throw new AppError(httpStatus.NOT_FOUND, "Ride not found!");
+    }
+    console.log(driverId);
+    if (!driverId) {
+        throw new AppError(httpStatus.NOT_FOUND, "Ride not found!");
+
+    }
+
+    if (ride.driver?.toString() !== driverId) {
+        throw new AppError(httpStatus.BAD_REQUEST, "You are not assigned for the ride")
+    }
+
+    switch (newStatus) {
+        case "picked_up":
+            ride.status = RideStatus.PICKED_UP;
+            ride.pickedUpAt = new Date();
+            break;
+        case "in_transit":
+            ride.status = RideStatus.IN_TRANSIT;
+            break;
+        case "completed":
+            ride.status = RideStatus.COMPLETED;
+            ride.completedAt = new Date();
+            break;
+        case "cancelled":
+            ride.status = RideStatus.CANCELLED;
+            ride.cancelledAt = new Date();
+            break;
+        default:
+            throw new AppError(httpStatus.BAD_REQUEST, "Unsupported status!");
+    }
+
+    await ride.save();
+    return ride;
+
+}
+
 export const rideServices = {
     requestRide,
     getAllRide,
     getAvailableRides,
-    acceptRide
+    acceptRide,
+    updateRideStatus
 }
