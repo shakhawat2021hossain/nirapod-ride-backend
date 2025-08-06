@@ -88,6 +88,18 @@ const setAvailabilityStatus = catchAsync(async (req: Request, res: Response) => 
 })
 
 
+const toggleBlock = catchAsync(async (req: Request, res: Response) => {
+   
+    const result = await userServices.toggleBlock(req.params.id)
+    sendResponse(res, {
+        success: true,
+        messaage: `Updated block status, BLOCKED: ${result.isBlocked}`,
+        statusCode: httpStatus.OK,
+        data: result
+    })
+})
+
+
 
 export const userControllers = {
     createUser,
@@ -96,5 +108,6 @@ export const userControllers = {
     becomeDriver,
     getDriverRequests,
     approveDriverRequest,
-    setAvailabilityStatus
+    setAvailabilityStatus,
+    toggleBlock
 }

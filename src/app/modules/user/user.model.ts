@@ -64,7 +64,7 @@ const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String },
+    password: { type: String , required: true},
     role: {
       type: String,
       enum: Object.values(Role),
@@ -79,6 +79,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: Object.values(Availability)
     },
+    isBlocked: {type: Boolean, default: false},
     isVerified: { type: Boolean, default: false },
     isApproved: { type: Boolean, default: false },
     auths: [authProviderSchema],

@@ -59,6 +59,16 @@ const cancelRide = async (rideId: string, riderId: string) => {
 }
 
 
+const getMyRides = async (riderId: string) => {
+    if (!riderId) {
+        throw new AppError(httpStatus.FORBIDDEN, "Only riders can view their ride history!");
+    }
+
+    const rides = await Ride.find({ rider: riderId })
+        .sort({ createdAt: -1 })
+    return rides
+}
+
 
 /*================================= DRIVER ==============================*/
 const getAvailableRides = async () => {
@@ -200,10 +210,10 @@ export const rideServices = {
     acceptRide,
     updateRideStatus,
     cancelRide,
-    earningsHistory
+    earningsHistory,
+    getMyRides
 }
 
 //   getRideById,
-//   getMyRides,
 //   getRiderRideHistory,
 //   getDriverRideHistory,

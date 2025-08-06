@@ -38,7 +38,6 @@ export interface IDriverRequest {
     requestedAt: Date;
     approvedAt?: Date;
     approvedBy?: Types.ObjectId
-
 }
 export interface IAuthProvider {
     provider: "credentials" | "google";
@@ -49,7 +48,7 @@ export interface IUser {
     name: string;
     email: string;
     phone?: string;
-    password?: string;
+    password: string;
     role: Role;
     picture?: string;
     availability?: Availability;
@@ -57,6 +56,7 @@ export interface IUser {
     auths?: IAuthProvider[];
     address?: string;
     isVerified?: boolean;
+    isBlocked?: boolean; 
     // isOnline?: boolean;
     isApproved?: boolean;
     driverRequest?: IDriverRequest;

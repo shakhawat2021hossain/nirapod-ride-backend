@@ -129,6 +129,21 @@ const setAvailabilityStatus = async (decodedToken: JwtPayload) => {
 
 }
 
+const toggleBlock = async (userId: string) => {
+    const user = await User.findById(userId)
+
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, "User not found!")
+    }
+
+    user.isBlocked = user.isBlocked ? false : true
+
+    await user.save()
+
+    return user
+
+}
+
 
 
 export const userServices = {
@@ -138,5 +153,7 @@ export const userServices = {
     becomeDriver,
     getDriverRequests,
     approveDriverRequest,
-    setAvailabilityStatus
+    setAvailabilityStatus,
+    toggleBlock
+
 }
