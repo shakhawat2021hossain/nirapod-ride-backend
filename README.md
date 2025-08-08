@@ -2,6 +2,9 @@
 
 A **secure**, **role-based**, and **scalable backend API** for a ride-booking system (like Uber / Pathao) built with **Express.js**, **MongoDB (Mongoose)**, and **JWT authentication**. It supports `rider`, `driver`, and `admin` roles with clear lifecycle and business rules.
 
+## Base URL
+  - https://nirapod-ride.vercel.app/
+
 ## 🚀 Features
 
 - JWT-based authentication with roles: `admin`, `rider`, `driver`
