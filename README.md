@@ -3,7 +3,9 @@
 A **secure**, **role-based**, and **scalable backend API** for a ride-booking system (like Uber / Pathao) built with **Express.js**, **MongoDB (Mongoose)**, and **JWT authentication**. It supports `rider`, `driver`, and `admin` roles with clear lifecycle and business rules.
 
 ## Base URL
-  - https://nirapod-ride.vercel.app/
+  ```bash
+  https://nirapod-ride.vercel.app/api/v1
+  ```
 
 ## 🚀 Features
 
@@ -121,7 +123,6 @@ Content-Type: application/json
 | PATCH | `/api/v1/user/availability` | Driver | Toggle availability status | _none_ |
 | PATCH | `/api/v1/ride/:id/accept-ride` | Driver | Accept a requested ride | _none_ |
 | PATCH | `/api/v1/ride/:id/reject` | Driver | Reject a ride request | _none_ |
-| PATCH | `/api/v1/ride/:id/update-status` | Driver (or Admin override) | Update ride lifecycle status | `{ "status": "picked_up" | "in_transit" | "completed" | "cancelled" }` |
 | GET | `/api/v1/ride/earnings` | Driver | View earnings history (from completed rides) | _none_ |
 | GET | `/api/v1/ride/available-rides` | Driver | List rides available to accept | _none_ |
 
@@ -131,8 +132,8 @@ Content-Type: application/json
 ### Admin
 | Method | Path | Auth | Description | Body |
 |--------|------|------|-------------|------|
+| GET | `/api/v1/user/all-user` | Admin | List all users (optional `role` query param: `RIDER` or `DRIVER`) | _none_ |
 | PATCH | `/api/v1/user/driver-request/:id/approve` | Admin | Approve driver application | _none_ |
-| PATCH | `/api/v1/driver/reject/:userId` | Admin | Reject driver application | `{ "reason": "string" }` (optional) |
 | GET | `/api/v1/ride/all-rides` | Admin | List all rides | _none_ |
 | PATCH | `/api/v1/user/:id/toggle-block` | Admin | Block or unblock a user | _none_ |
 
