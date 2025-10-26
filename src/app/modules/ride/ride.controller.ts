@@ -82,6 +82,17 @@ const acceptRide = catchAsync(async (req: Request, res: Response) =>{
     })
 })
 
+
+const getDriverdRides = catchAsync(async (req: Request, res: Response) =>{
+    const result = await rideServices.getDriverdRides(req.user?.userId)
+    sendResponse(res, {
+        messaage: "Driver rides are retrieved",
+        success: true,
+        statusCode: httpStatus.OK,
+        data: result
+    })
+})
+
 const updateRideStatus = catchAsync(async (req: Request, res: Response) =>{
     const result = await rideServices.updateRideStatus(req.params.id, req.user?.userId, req.body.status)
     sendResponse(res, {
@@ -113,6 +124,7 @@ export const rideControllers = {
     getRideById,
     getAvailableRides,
     acceptRide,
+    getDriverdRides,
     updateRideStatus,
     cancelRide,
     earningsHistory,

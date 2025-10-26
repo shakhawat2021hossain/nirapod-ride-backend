@@ -77,7 +77,7 @@ const getMyRides = async (riderId: string) => {
 
 const getRideById = async (id: string) => {
     const ride = await Ride.findById(id)
-    if(!ride){
+    if (!ride) {
         throw new AppError(httpStatus.NOT_FOUND, "No ride found for the given id")
     }
     return ride
@@ -125,6 +125,17 @@ const acceptRide = async (rideId: string, driverId: string) => {
     await ride.save();
 
     return ride;
+}
+
+
+const getDriverdRides = async (driverId: string) => {
+    const rides = await Ride.find({ driver: driverId })
+    if (!rides) {
+        throw new AppError(httpStatus.NOT_FOUND, "No ride found for this driver!")
+    }
+    
+
+    return rides;
 }
 
 
@@ -207,6 +218,7 @@ const earningsHistory = async (driverId: string) => {
 
 
 
+
 /*================================= ADMIN ===================================*/
 
 
@@ -222,12 +234,12 @@ export const rideServices = {
     getRideById,
     getAvailableRides,
     acceptRide,
+    getDriverdRides,
     updateRideStatus,
     cancelRide,
     earningsHistory,
     getMyRides
 }
 
-//   getRideById,
 //   getRiderRideHistory,
 //   getDriverRideHistory,

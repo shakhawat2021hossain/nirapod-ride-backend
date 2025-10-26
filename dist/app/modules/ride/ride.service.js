@@ -114,6 +114,13 @@ const acceptRide = (rideId, driverId) => __awaiter(void 0, void 0, void 0, funct
     yield ride.save();
     return ride;
 });
+const getDriverdRides = (driverId) => __awaiter(void 0, void 0, void 0, function* () {
+    const rides = yield ride_model_1.Ride.find({ driver: driverId });
+    if (!rides) {
+        throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "No ride found for this driver!");
+    }
+    return rides;
+});
 const updateRideStatus = (rideId, driverId, newStatus) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const ride = yield ride_model_1.Ride.findById(rideId);
@@ -191,11 +198,11 @@ exports.rideServices = {
     getRideById,
     getAvailableRides,
     acceptRide,
+    getDriverdRides,
     updateRideStatus,
     cancelRide,
     earningsHistory,
     getMyRides
 };
-//   getRideById,
 //   getRiderRideHistory,
 //   getDriverRideHistory,

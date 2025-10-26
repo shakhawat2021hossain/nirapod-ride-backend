@@ -15,6 +15,7 @@ router.get('/all-rides', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN)
 router.get('/available-rides', (0, checkAuth_1.checkAuth)(user_interface_1.Role.DRIVER), ride_controller_1.rideControllers.getAvailableRides);
 router.get('/earnings', (0, checkAuth_1.checkAuth)(user_interface_1.Role.DRIVER), ride_controller_1.rideControllers.earningsHistory);
 router.get('/my-rides', (0, checkAuth_1.checkAuth)(user_interface_1.Role.RIDER), ride_controller_1.rideControllers.getMyRides);
+router.get('/driver-rides', (0, checkAuth_1.checkAuth)(user_interface_1.Role.DRIVER), ride_controller_1.rideControllers.getDriverdRides);
 router.get('/:id', (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), ride_controller_1.rideControllers.getRideById);
 router.patch('/:id/cancel-ride', (0, checkAuth_1.checkAuth)(user_interface_1.Role.RIDER), ride_controller_1.rideControllers.cancelRide);
 router.patch('/:id/update-status', (0, checkAuth_1.checkAuth)(user_interface_1.Role.DRIVER), ride_controller_1.rideControllers.updateRideStatus);

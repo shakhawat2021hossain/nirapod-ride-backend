@@ -22,6 +22,7 @@ router.get(
 router.get('/available-rides', checkAuth(Role.DRIVER), rideControllers.getAvailableRides)
 router.get('/earnings', checkAuth(Role.DRIVER), rideControllers.earningsHistory)
 router.get('/my-rides', checkAuth(Role.RIDER), rideControllers.getMyRides)
+router.get('/driver-rides', checkAuth(Role.DRIVER), rideControllers.getDriverdRides)
 router.get('/:id', checkAuth(...Object.values(Role)), rideControllers.getRideById)
 router.patch('/:id/cancel-ride', checkAuth(Role.RIDER), rideControllers.cancelRide)
 router.patch('/:id/update-status', checkAuth(Role.DRIVER), rideControllers.updateRideStatus)

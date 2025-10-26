@@ -85,6 +85,16 @@ const acceptRide = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, 
         data: result
     });
 }));
+const getDriverdRides = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const result = yield ride_service_1.rideServices.getDriverdRides((_a = req.user) === null || _a === void 0 ? void 0 : _a.userId);
+    (0, sendResponse_1.sendResponse)(res, {
+        messaage: "Driver rides are retrieved",
+        success: true,
+        statusCode: http_status_codes_1.default.OK,
+        data: result
+    });
+}));
 const updateRideStatus = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const result = yield ride_service_1.rideServices.updateRideStatus(req.params.id, (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId, req.body.status);
@@ -111,6 +121,7 @@ exports.rideControllers = {
     getRideById,
     getAvailableRides,
     acceptRide,
+    getDriverdRides,
     updateRideStatus,
     cancelRide,
     earningsHistory,
