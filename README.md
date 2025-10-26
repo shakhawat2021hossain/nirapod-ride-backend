@@ -2,6 +2,11 @@
 
 A **secure**, **role-based**, and **scalable backend API** for a ride-booking system (like Uber / Pathao) built with **Express.js**, **MongoDB (Mongoose)**, and **JWT authentication**. It supports `rider`, `driver`, and `admin` roles with clear lifecycle and business rules.
 
+## Base URL
+  ```bash
+  https://nirapod-ride.vercel.app/api/v1
+  ```
+
 ## 🚀 Features
 
 - JWT-based authentication with roles: `admin`, `rider`, `driver`
@@ -90,10 +95,10 @@ src/
 ## API Endpoints Summary
 
 ### Authentication
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/api/v1/auth/signup` | Public | Register user (default role: RIDER) |
-| POST | `/api/v1/auth/login` | Public | Login and receive JWT |
+| Method | Path | Auth | Description | Body |
+|--------|------|------|-------------|------|
+| POST | `/api/v1/auth/register` | Public | Register user (default role: RIDER) | `{ "name": "John Doe", "email": "john@example.com", "password": "123456", "role": "RIDER" (optional) }`
+| POST | `/api/v1/auth/login` | Public | Login and receive JWT | `{ "email": "john@example.com", "password": "123456" }`
 
 ### Common Headers
 Authorization: Bearer <token>
@@ -105,8 +110,8 @@ Content-Type: application/json
 | Method | Path | Auth | Description | Body |
 |--------|------|------|-------------|------|
 | POST | `/api/v1/ride/request` | Rider | Request a new ride | `{ "startLocation": "string", "endLocation": "string", "fare": number }` |
-| PATCH | `/api/v1/ride/:id/cancel` | Rider | Cancel a ride (if allowed) | _none or optional reason_ |
-| GET | `/api/v1/ride/me` | Rider | Get own ride history | _none_ |
+| PATCH | `/api/v1/ride/:id/cancel-ride` | Rider | Cancel a ride (if allowed) | _none or optional reason_ |
+| GET | `/api/v1/ride/my-rides` | Rider | Get own ride history | _none_ |
 | GET | `/api/v1/ride/:id` | Rider (owner) / Admin / Driver | Get ride details | _none_ |
 
 ---
@@ -114,23 +119,23 @@ Content-Type: application/json
 ### Driver
 | Method | Path | Auth | Description | Body |
 |--------|------|------|-------------|------|
-| POST | `/api/v1/driver/apply` | Rider (to become driver) | Apply to become a driver (creates pending application) | `{ "vehicleInfo": { "type": "car"|"bike"|"cng"|"auto", "model": "string", "plateNum": "string" } }` |
-| PATCH | `/api/v1/driver/availability` | Driver | Toggle availability status | `{ "availability": "ONLINE" | "OFFLINE" }` |
-| PATCH | `/api/v1/ride/:id/accept` | Driver | Accept a requested ride | _none_ |
+| POST | `/api/v1/user/become-driver` | Rider (to become driver) | Apply to become a driver (creates pending application) | `{ "vehicleInfo": { "type": "car"|"bike"|"cng"|"auto", "model": "string", "plateNum": "string" } }` |
+| PATCH | `/api/v1/user/availability` | Driver | Toggle availability status | _none_ |
+| PATCH | `/api/v1/ride/:id/accept-ride` | Driver | Accept a requested ride | _none_ |
 | PATCH | `/api/v1/ride/:id/reject` | Driver | Reject a ride request | _none_ |
-| PATCH | `/api/v1/ride/:id/status` | Driver (or Admin override) | Update ride lifecycle status | `{ "status": "picked_up" | "in_transit" | "completed" | "cancelled" }` |
-| GET | `/api/v1/earnings/me/history` | Driver | View earnings history (from completed rides) | _none_ |
+| GET | `/api/v1/ride/earnings` | Driver | View earnings history (from completed rides) | _none_ |
+| GET | `/api/v1/ride/available-rides` | Driver | List rides available to accept | _none_ |
+
 
 ---
 
 ### Admin
 | Method | Path | Auth | Description | Body |
 |--------|------|------|-------------|------|
-| PATCH | `/api/v1/driver/approve/:userId` | Admin | Approve driver application | _none_ |
-| PATCH | `/api/v1/driver/reject/:userId` | Admin | Reject driver application | `{ "reason": "string" }` (optional) |
-| GET | `/api/v1/ride` | Admin | List all rides with filters | Query params: status, date range, riderId, driverId |
-| PATCH | `/api/v1/ride/:id/status-override` | Admin | Forcefully change ride status | `{ "status": "string", "reason"?: "string" }` |
-| PATCH | `/api/v1/user/block/:id` | Admin | Block or unblock a user | `{ "block": true|false }` |
+| GET | `/api/v1/user/all-user` | Admin | List all users (optional `role` query param: `RIDER` or `DRIVER`) | _none_ |
+| PATCH | `/api/v1/user/driver-request/:id/approve` | Admin | Approve driver application | _none_ |
+| GET | `/api/v1/ride/all-rides` | Admin | List all rides | _none_ |
+| PATCH | `/api/v1/user/:id/toggle-block` | Admin | Block or unblock a user | _none_ |
 
 ---
 
