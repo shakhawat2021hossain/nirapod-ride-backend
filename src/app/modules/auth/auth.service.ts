@@ -1,9 +1,26 @@
 import AppError from "../../utils/AppError"
-import { IUser } from "../user/user.interface"
+import { IAuthProvider, IUser } from "../user/user.interface"
 import { User } from "../user/user.model"
 import httpStatus from "http-status-codes"
 import bcrypt from "bcryptjs"
 import { generateTokens } from "../../utils/generateTokens"
+
+
+const createUser = async (payload: IUser) => {
+    const { email, password, ...rest } = payload
+    const isExist = await User.findOne({ email: email })
+    if (isExist) {
+        throw new AppError(httpStatus.BAD_REQUEST, "User ALready exist")
+    }
+
+    const hashedPass = await bcrypt.hash(password as string, 10)
+
+    const authProvider: IAuthProvider = { provider: "credentials", providerId: email as string }
+
+    const user = await User.create({ email, password: hashedPass, auths: [authProvider], ...rest })
+    return user
+
+}
 
 const credentialLogin = async (payload: Partial<IUser>) => {
     const isExist = await User.findOne({ email: payload.email })
@@ -20,7 +37,7 @@ const credentialLogin = async (payload: Partial<IUser>) => {
 
     const user = isExist.toObject()
 
-    delete user.password
+    // delete user.password
 
     return {
         user,
@@ -28,10 +45,10 @@ const credentialLogin = async (payload: Partial<IUser>) => {
         refreshToken: tokens.refreshToken
     }
 
-
-
-
 }
+
+
 export const authServices = {
+    createUser,
     credentialLogin
 }

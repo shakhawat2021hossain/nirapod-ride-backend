@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userRoutes = void 0;
+const express_1 = require("express");
+const user_controller_1 = require("./user.controller");
+const checkAuth_1 = require("../../middleware/checkAuth");
+const user_interface_1 = require("./user.interface");
+const router = (0, express_1.Router)();
+router.get('/all-user', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), user_controller_1.userControllers.getAllUser);
+router.patch('/become-driver', (0, checkAuth_1.checkAuth)(user_interface_1.Role.RIDER), user_controller_1.userControllers.becomeDriver);
+router.get('/driver-request', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), user_controller_1.userControllers.getDriverRequests);
+router.patch('/availability', (0, checkAuth_1.checkAuth)(user_interface_1.Role.DRIVER), user_controller_1.userControllers.setAvailabilityStatus);
+router.patch('/driver-request/:id/approve', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), user_controller_1.userControllers.approveDriverRequest);
+router.patch('/:id/toggle-block', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), user_controller_1.userControllers.toggleBlock);
+router.patch('/:id', (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), user_controller_1.userControllers.updateUser);
+router.get('/me', (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), user_controller_1.userControllers.getMe);
+exports.userRoutes = router;

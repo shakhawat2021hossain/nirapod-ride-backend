@@ -6,7 +6,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status-codes"
 
 const requestRide = catchAsync(async (req: Request, res: Response) => {
-    // console.log(req.body, req.user);
+    console.log(req.body, req.user);
     const ride = await rideServices.requestRide(req.body, req.user as JwtPayload)
     sendResponse(res, {
         messaage: "created a ride request",
@@ -48,6 +48,17 @@ const getMyRides = catchAsync(async (req: Request, res: Response) =>{
         data: result
     })
 })
+
+const getRideById = catchAsync(async (req: Request, res: Response) =>{
+    const result = await rideServices.getRideById(req.params.id)
+    sendResponse(res, {
+        messaage: "Retrived ride data successfully!",
+        success: true,
+        statusCode: httpStatus.OK,
+        data: result
+    })
+})
+
 
 /* DRIVER */
 
@@ -99,6 +110,7 @@ const earningsHistory = catchAsync(async (req: Request, res: Response) =>{
 export const rideControllers = {
     requestRide,
     getAllRide,
+    getRideById,
     getAvailableRides,
     acceptRide,
     updateRideStatus,

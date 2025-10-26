@@ -1,25 +1,9 @@
 import AppError from "../../utils/AppError"
-import { Availability, DriverRequestStatus, IAuthProvider, IUser, IVehicle, Role } from "./user.interface"
+import { Availability, DriverRequestStatus, IUser, IVehicle, Role } from "./user.interface"
 import { User } from "./user.model"
 import httpStatus from "http-status-codes"
-import bcrypt from "bcryptjs"
 import { JwtPayload } from "jsonwebtoken"
 
-const createUser = async (payload: IUser) => {
-    const { email, password, ...rest } = payload
-    const isExist = await User.findOne({ email: email })
-    if (isExist) {
-        throw new AppError(httpStatus.BAD_REQUEST, "User ALready exist")
-    }
-
-    const hashedPass = await bcrypt.hash(password as string, 10)
-
-    const authProvider: IAuthProvider = { provider: "credentials", providerId: email as string }
-
-    const user = await User.create({ email, password: hashedPass, auths: [authProvider], ...rest })
-    return user
-
-}
 
 const updateUser = async (userId: string, payload: Partial<IUser>, decodedToken: JwtPayload) => {
     const isExist = await User.findById(userId)
@@ -44,8 +28,9 @@ const updateUser = async (userId: string, payload: Partial<IUser>, decodedToken:
     return result;
 }
 
-const getAllUser = async () => {
-    const users = await User.find({})
+const getAllUser = async (query?: string) => {
+    const filter = query ? { role: query } : {};
+    const users = await User.find(filter)
     return users
 }
 
@@ -146,14 +131,20 @@ const toggleBlock = async (userId: string) => {
 
 
 
+const getMe = async (userId: string) => {
+    const user = await User.findById(userId).select("-password")
+    return user
+
+}
+
 export const userServices = {
-    createUser,
     getAllUser,
     updateUser,
     becomeDriver,
     getDriverRequests,
     approveDriverRequest,
     setAvailabilityStatus,
-    toggleBlock
+    toggleBlock,
+    getMe
 
 }

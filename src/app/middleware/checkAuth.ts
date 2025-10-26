@@ -8,8 +8,8 @@ import { JwtPayload } from "jsonwebtoken";
 export const checkAuth = (...authRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {
         console.log(authRoles);
-        const token = req.headers.authorization;
-        // console.log(token);
+        const token = req.headers.authorization || req.cookies.accessToken;
+        console.log("token in checkauth", token);
         if (!token) {
             throw new AppError(403, "No access token found!")
         }

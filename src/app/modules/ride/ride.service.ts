@@ -6,9 +6,12 @@ import { Role } from "../user/user.interface"
 import { Ride } from "./ride.model"
 import { User } from "../user/user.model"
 import { Types } from "mongoose"
-/*================================= USER ====================================*/
+/*================================= RIDER ====================================*/
 
-const requestRide = async (payload: IRide, decodedToken: JwtPayload) => {
+const requestRide = async (payload: Partial<IRide>, decodedToken: JwtPayload) => {
+    // console.log("decodedToken", decodedToken)
+    // console.log("body", payload)
+
 
     if (!payload.endLocation || !payload.startLocation || !payload.fare) {
         throw new AppError(httpStatus.UNAUTHORIZED, "You missed any required field!")
@@ -16,11 +19,13 @@ const requestRide = async (payload: IRide, decodedToken: JwtPayload) => {
     if (decodedToken.role !== Role.RIDER) {
         throw new AppError(httpStatus.UNAUTHORIZED, "you are not authorized for request a ride!")
     }
+    console.log("xyz")
 
     const isExist = await Ride.findOne({
         rider: decodedToken.userId,
         status: { $in: ["requested", "accepted", "picked_up", "in_transit"] }
     })
+    console.log(isExist)
     if (isExist) {
         throw new AppError(httpStatus.BAD_REQUEST, "You are already in a ride")
     }
@@ -35,6 +40,7 @@ const requestRide = async (payload: IRide, decodedToken: JwtPayload) => {
         status: "requested",
         requestedAt: new Date(),
     })
+    console.log(ride)
     return ride;
 
 }
@@ -69,6 +75,13 @@ const getMyRides = async (riderId: string) => {
     return rides
 }
 
+const getRideById = async (id: string) => {
+    const ride = await Ride.findById(id)
+    if(!ride){
+        throw new AppError(httpStatus.NOT_FOUND, "No ride found for the given id")
+    }
+    return ride
+}
 
 /*================================= DRIVER ==============================*/
 const getAvailableRides = async () => {
@@ -206,6 +219,7 @@ const getAllRide = async () => {
 export const rideServices = {
     requestRide,
     getAllRide,
+    getRideById,
     getAvailableRides,
     acceptRide,
     updateRideStatus,

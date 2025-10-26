@@ -5,15 +5,7 @@ import httpStatus from "http-status-codes"
 import { catchAsync } from "../../utils/catchAsync"
 import { JwtPayload } from "jsonwebtoken"
 
-const createUser = catchAsync(async (req: Request, res: Response) => {
-    const user = await userServices.createUser(req.body)
-    sendResponse(res, {
-        statusCode: httpStatus.CREATED,
-        messaage: "created a new user!!",
-        success: true,
-        data: user
-    })
-})
+
 
 const updateUser = catchAsync(async (req: Request, res: Response) => {
     // const token = req.headers.authorization
@@ -30,7 +22,8 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
 
 
 const getAllUser = catchAsync(async (req: Request, res: Response) => {
-    const users = await userServices.getAllUser()
+    const role = req.query.role as string | undefined;
+    const users = await userServices.getAllUser(role)
     sendResponse(res, {
         success: true,
         messaage: "Retrieved all users successfully!!!",
@@ -77,7 +70,7 @@ const approveDriverRequest = catchAsync(async (req: Request, res: Response) => {
 
 
 const setAvailabilityStatus = catchAsync(async (req: Request, res: Response) => {
-   
+
     const result = await userServices.setAvailabilityStatus(req.user as JwtPayload)
     sendResponse(res, {
         success: true,
@@ -89,7 +82,7 @@ const setAvailabilityStatus = catchAsync(async (req: Request, res: Response) => 
 
 
 const toggleBlock = catchAsync(async (req: Request, res: Response) => {
-   
+
     const result = await userServices.toggleBlock(req.params.id)
     sendResponse(res, {
         success: true,
@@ -99,15 +92,26 @@ const toggleBlock = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+const getMe = catchAsync(async (req: Request, res: Response) => {
 
+    const decoderToken = req.user as JwtPayload
+    const result = await userServices.getMe(decoderToken.userId)
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        messaage: "User Data retreived Successfully!",
+        data: result,
+        success: true
+    })
+})
 
 export const userControllers = {
-    createUser,
     getAllUser,
     updateUser,
     becomeDriver,
     getDriverRequests,
     approveDriverRequest,
     setAvailabilityStatus,
-    toggleBlock
+    toggleBlock,
+    getMe
 }
