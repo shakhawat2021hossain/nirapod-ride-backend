@@ -7,7 +7,7 @@ export const generateTokens = async (payload: JwtPayload) => {
         role: payload.role
     }
 
-    const accessToken = jwt.sign(jwtPayload, envVars.ACCESS_TOKEN_SECRET, { expiresIn: '1d' })
+    const accessToken = jwt.sign(jwtPayload, envVars.ACCESS_TOKEN_SECRET, { expiresIn: '7d' })
     const refreshToken = jwt.sign(jwtPayload, envVars.REFRESH_TOKEN_SECRET, { expiresIn: '30d' })
 
     return {

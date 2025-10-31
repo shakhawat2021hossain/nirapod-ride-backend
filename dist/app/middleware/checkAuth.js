@@ -26,7 +26,7 @@ const checkAuth = (...authRoles) => (req, res, next) => __awaiter(void 0, void 0
         }
         // here must be use await, either if block will be true
         const isVerified = yield (0, verifyToken_1.verifyToken)(token, env_1.envVars.ACCESS_TOKEN_SECRET);
-        // console.log(isVerified);
+        console.log("isverified", isVerified);
         if (!authRoles.includes(isVerified.role)) {
             throw new AppError_1.default(403, "You are not permitted for accessing the route!");
         }

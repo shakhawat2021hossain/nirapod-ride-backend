@@ -50,8 +50,7 @@ const driverRequestSchema = new Schema<IDriverRequest>(
     approvedAt: { type: Date },
     approvedBy: {
       type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true
+      ref: "User"
     }
   },
   {

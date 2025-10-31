@@ -6,6 +6,7 @@ import { Role } from "./user.interface";
 const router =  Router()
 
 router.get('/all-user', checkAuth(Role.ADMIN), userControllers.getAllUser)
+router.patch('/change-password', checkAuth(...Object.values(Role)), userControllers.changePass)
 router.patch('/become-driver', checkAuth(Role.RIDER), userControllers.becomeDriver)
 router.get('/driver-request', checkAuth(Role.ADMIN), userControllers.getDriverRequests)
 router.patch('/availability', checkAuth(Role.DRIVER), userControllers.setAvailabilityStatus)

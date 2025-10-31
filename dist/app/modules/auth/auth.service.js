@@ -42,6 +42,7 @@ const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const credentialLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const isExist = yield user_model_1.User.findOne({ email: payload.email });
+    console.log("existed user:", isExist);
     if (!isExist) {
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "Invalid credentials");
     }

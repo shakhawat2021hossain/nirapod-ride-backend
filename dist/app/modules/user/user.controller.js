@@ -28,6 +28,15 @@ const updateUser = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, 
         data: result
     });
 }));
+const changePass = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_service_1.userServices.changePass(req.body, req.user);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        messaage: "Password Changed Successfully!",
+        statusCode: http_status_codes_1.default.OK,
+        data: result
+    });
+}));
 const getAllUser = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const role = req.query.role;
     const users = yield user_service_1.userServices.getAllUser(role);
@@ -41,6 +50,7 @@ const getAllUser = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, 
 const becomeDriver = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log("body",req.body);
     const driver = yield user_service_1.userServices.becomeDriver(req.user, req.body);
+    console.log('driver', driver);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         messaage: "updated role to driver!!!",
@@ -60,7 +70,8 @@ const getDriverRequests = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(v
 }));
 const approveDriverRequest = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log("params", req.params);
-    const result = yield user_service_1.userServices.approveDriverRequest(req.params.id, req.user);
+    const { status } = req.query;
+    const result = yield user_service_1.userServices.approveDriverRequest(req.params.id, req.user, status);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         messaage: "Update role to driver!!!",
@@ -104,5 +115,6 @@ exports.userControllers = {
     approveDriverRequest,
     setAvailabilityStatus,
     toggleBlock,
-    getMe
+    getMe,
+    changePass
 };

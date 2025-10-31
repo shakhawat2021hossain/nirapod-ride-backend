@@ -4,6 +4,7 @@ import { sendResponse } from "../../utils/sendResponse"
 import httpStatus from "http-status-codes"
 import { catchAsync } from "../../utils/catchAsync"
 import { JwtPayload } from "jsonwebtoken"
+import { DriverRequestStatus } from "./user.interface"
 
 
 
@@ -15,6 +16,18 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         success: true,
         messaage: "updated user data successfully!!!",
+        statusCode: httpStatus.OK,
+        data: result
+    })
+})
+
+
+const changePass = catchAsync(async (req: Request, res: Response) => {
+
+    const result = await userServices.changePass(req.body, req.user as JwtPayload)
+    sendResponse(res, {
+        success: true,
+        messaage: "Password Changed Successfully!",
         statusCode: httpStatus.OK,
         data: result
     })
@@ -36,6 +49,7 @@ const getAllUser = catchAsync(async (req: Request, res: Response) => {
 const becomeDriver = catchAsync(async (req: Request, res: Response) => {
     // console.log("body",req.body);
     const driver = await userServices.becomeDriver(req.user as JwtPayload, req.body)
+    console.log('driver', driver)
     sendResponse(res, {
         success: true,
         messaage: "updated role to driver!!!",
@@ -59,7 +73,8 @@ const getDriverRequests = catchAsync(async (req: Request, res: Response) => {
 
 const approveDriverRequest = catchAsync(async (req: Request, res: Response) => {
     // console.log("params", req.params);
-    const result = await userServices.approveDriverRequest(req.params.id, req.user as JwtPayload)
+    const { status } = req.query
+    const result = await userServices.approveDriverRequest(req.params.id, req.user as JwtPayload, status as DriverRequestStatus)
     sendResponse(res, {
         success: true,
         messaage: "Update role to driver!!!",
@@ -113,5 +128,6 @@ export const userControllers = {
     approveDriverRequest,
     setAvailabilityStatus,
     toggleBlock,
-    getMe
+    getMe,
+    changePass
 }

@@ -17,6 +17,7 @@ const AppError_1 = __importDefault(require("../../utils/AppError"));
 const user_interface_1 = require("./user.interface");
 const user_model_1 = require("./user.model");
 const http_status_codes_1 = __importDefault(require("http-status-codes"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const updateUser = (userId, payload, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
     const isExist = yield user_model_1.User.findById(userId);
     if (!isExist) {
@@ -35,7 +36,21 @@ const updateUser = (userId, payload, decodedToken) => __awaiter(void 0, void 0, 
     const result = yield user_model_1.User.findByIdAndUpdate(userId, payload, { returnDocument: "after", runValidators: true });
     return result;
 });
+const changePass = (payload, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExist = yield user_model_1.User.findById(decodedToken.userId);
+    if (!isExist) {
+        throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "User not found!");
+    }
+    const isMatched = yield bcryptjs_1.default.compare(payload.oldPass, isExist.password);
+    if (!isMatched) {
+        throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Invalid Credentials");
+    }
+    const changedPass = yield bcryptjs_1.default.hash(payload.newPass, 10);
+    const result = yield user_model_1.User.findByIdAndUpdate(decodedToken.userId, { password: changedPass }, { returnDocument: "after", runValidators: true });
+    return result;
+});
 const getAllUser = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(query);
     const filter = query ? { role: query } : {};
     const users = yield user_model_1.User.find(filter);
     return users;
@@ -45,6 +60,7 @@ const becomeDriver = (decodedToken, payload) => __awaiter(void 0, void 0, void 0
     if (decodedToken.role !== user_interface_1.Role.RIDER) {
         throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "You are not authorized");
     }
+    console.log("payload", payload);
     const result = yield user_model_1.User.findByIdAndUpdate(decodedToken.userId, {
         driverRequest: {
             status: user_interface_1.DriverRequestStatus.PENDING,
@@ -64,7 +80,7 @@ const getDriverRequests = () => __awaiter(void 0, void 0, void 0, function* () {
         .sort({ "driverRequest.requestedAt": -1 });
     return pending;
 });
-const approveDriverRequest = (id, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
+const approveDriverRequest = (id, decodedToken, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.User.findById(id);
     if (!user) {
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "User not found!");
@@ -72,11 +88,13 @@ const approveDriverRequest = (id, decodedToken) => __awaiter(void 0, void 0, voi
     if (!user.driverRequest || user.driverRequest.status !== user_interface_1.DriverRequestStatus.PENDING) {
         throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "No pending driver request to approve!");
     }
-    user.role = user_interface_1.Role.DRIVER;
-    user.vehicleInfo = user.driverRequest.vehicleInfo;
-    user.driverRequest.approvedAt = new Date();
-    user.driverRequest.approvedBy = decodedToken.userId;
-    user.driverRequest.status = user_interface_1.DriverRequestStatus.APPROVED;
+    user.driverRequest.status = payload;
+    if (payload === user_interface_1.DriverRequestStatus.APPROVED) {
+        user.role = user_interface_1.Role.DRIVER;
+        user.vehicleInfo = user.driverRequest.vehicleInfo;
+        user.driverRequest.approvedAt = new Date();
+        user.driverRequest.approvedBy = decodedToken.userId;
+    }
     yield user.save();
     return user;
 });
@@ -118,5 +136,6 @@ exports.userServices = {
     approveDriverRequest,
     setAvailabilityStatus,
     toggleBlock,
-    getMe
+    getMe,
+    changePass
 };

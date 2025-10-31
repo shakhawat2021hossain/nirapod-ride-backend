@@ -24,6 +24,7 @@ const createUser = async (payload: IUser) => {
 
 const credentialLogin = async (payload: Partial<IUser>) => {
     const isExist = await User.findOne({ email: payload.email })
+    console.log("existed user:", isExist)
     if (!isExist) {
         throw new AppError(httpStatus.NOT_FOUND, "Invalid credentials")
     }

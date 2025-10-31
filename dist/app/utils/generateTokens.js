@@ -21,7 +21,7 @@ const generateTokens = (payload) => __awaiter(void 0, void 0, void 0, function* 
         email: payload.email,
         role: payload.role
     };
-    const accessToken = jsonwebtoken_1.default.sign(jwtPayload, env_1.envVars.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
+    const accessToken = jsonwebtoken_1.default.sign(jwtPayload, env_1.envVars.ACCESS_TOKEN_SECRET, { expiresIn: '7d' });
     const refreshToken = jsonwebtoken_1.default.sign(jwtPayload, env_1.envVars.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
     return {
         accessToken,

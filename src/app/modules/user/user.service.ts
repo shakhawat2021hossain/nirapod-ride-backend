@@ -3,6 +3,13 @@ import { Availability, DriverRequestStatus, IUser, IVehicle, Role } from "./user
 import { User } from "./user.model"
 import httpStatus from "http-status-codes"
 import { JwtPayload } from "jsonwebtoken"
+import bcrypt from "bcryptjs"
+
+
+interface IPassChange {
+    oldPass: string;
+    newPass: string
+}
 
 
 const updateUser = async (userId: string, payload: Partial<IUser>, decodedToken: JwtPayload) => {
@@ -28,7 +35,29 @@ const updateUser = async (userId: string, payload: Partial<IUser>, decodedToken:
     return result;
 }
 
+
+const changePass = async ( payload: IPassChange, decodedToken: JwtPayload) => {
+    const isExist = await User.findById(decodedToken.userId)
+
+    if (!isExist) {
+        throw new AppError(httpStatus.NOT_FOUND, "User not found!")
+    }
+
+    const isMatched = await bcrypt.compare(payload.oldPass, isExist.password)
+    if (!isMatched) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Invalid Credentials")
+    }
+
+    const changedPass = await bcrypt.hash(payload.newPass, 10)
+
+    const result = await User.findByIdAndUpdate(decodedToken.userId, {password: changedPass}, { returnDocument: "after", runValidators: true })
+    return result;
+}
+
+
+
 const getAllUser = async (query?: string) => {
+    console.log(query)
     const filter = query ? { role: query } : {};
     const users = await User.find(filter)
     return users
@@ -40,6 +69,7 @@ const becomeDriver = async (decodedToken: JwtPayload, payload: Partial<IVehicle>
     if (decodedToken.role !== Role.RIDER) {
         throw new AppError(httpStatus.BAD_REQUEST, "You are not authorized")
     }
+    console.log("payload", payload)
 
     const result = await User.findByIdAndUpdate(
         decodedToken.userId,
@@ -56,6 +86,8 @@ const becomeDriver = async (decodedToken: JwtPayload, payload: Partial<IVehicle>
             returnDocument: "after"
         }
     ).select("-password");
+
+
     return result;
 
 
@@ -68,7 +100,7 @@ const getDriverRequests = async () => {
     return pending
 }
 
-const approveDriverRequest = async (id: string, decodedToken: JwtPayload) => {
+const approveDriverRequest = async (id: string, decodedToken: JwtPayload, payload: DriverRequestStatus) => {
     const user = await User.findById(id)
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, "User not found!")
@@ -78,11 +110,13 @@ const approveDriverRequest = async (id: string, decodedToken: JwtPayload) => {
         throw new AppError(httpStatus.BAD_REQUEST, "No pending driver request to approve!")
     }
 
-    user.role = Role.DRIVER
-    user.vehicleInfo = user.driverRequest.vehicleInfo
-    user.driverRequest.approvedAt = new Date();
-    user.driverRequest.approvedBy = decodedToken.userId
-    user.driverRequest.status = DriverRequestStatus.APPROVED;
+    user.driverRequest.status = payload;
+    if (payload === DriverRequestStatus.APPROVED) {
+        user.role = Role.DRIVER
+        user.vehicleInfo = user.driverRequest.vehicleInfo
+        user.driverRequest.approvedAt = new Date();
+        user.driverRequest.approvedBy = decodedToken.userId
+    }
 
     await user.save();
 
@@ -145,6 +179,6 @@ export const userServices = {
     approveDriverRequest,
     setAvailabilityStatus,
     toggleBlock,
-    getMe
-
+    getMe,
+    changePass
 }

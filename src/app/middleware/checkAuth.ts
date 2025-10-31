@@ -16,7 +16,7 @@ export const checkAuth = (...authRoles: string[]) => async (req: Request, res: R
 
         // here must be use await, either if block will be true
         const isVerified = await verifyToken(token, envVars.ACCESS_TOKEN_SECRET) as JwtPayload;
-        // console.log(isVerified);
+        console.log("isverified", isVerified);
         if (!authRoles.includes(isVerified.role)) {
             throw new AppError(403, "You are not permitted for accessing the route!")
         }

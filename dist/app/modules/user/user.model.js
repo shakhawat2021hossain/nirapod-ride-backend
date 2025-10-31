@@ -33,8 +33,7 @@ const driverRequestSchema = new mongoose_1.Schema({
     approvedAt: { type: Date },
     approvedBy: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+        ref: "User"
     }
 }, {
     _id: false,
