@@ -77,7 +77,7 @@ src/
  git clone <your-repo-url>
  cd <repo-directory>
 ```
-2. **Clone repository**
+2. **Install Dependencies**
  ```bash
    npm install
  ```
