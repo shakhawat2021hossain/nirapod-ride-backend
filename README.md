@@ -70,6 +70,53 @@ src/
 - TypeScript
 - HTTP status codes via `http-status-codes`
 
+
+## API Endpoints
+### 🔐 Authentication Routes (`/auth`)
+
+| Method | Endpoint | Description | Body (JSON Example) | Access |
+|--------|-----------|--------------|---------------------|--------|
+| POST | `/auth/register` | Register a new user | `{ "name": "John Doe", "email": "john@example.com", "password": "123456", "role": "rider" }` | Public |
+| POST | `/auth/login` | Login with credentials | `{ "email": "john@example.com", "password": "123456" }` | Public |
+| POST | `/auth/logout` | Logout the current user | None | Authenticated |
+
+---
+
+### 👤 User Routes (`/user`)
+
+| Method | Endpoint | Description | Body (JSON Example) | Access |
+|--------|-----------|--------------|---------------------|--------|
+| GET | `/user/all-user` | Get all users | None | Admin |
+| PATCH | `/user/change-password` | Change user password | `{ "oldPassword": "123456", "newPassword": "abcdef" }` | All Roles |
+| PATCH | `/user/become-driver` | Request to become a driver | `{ "plateNum": "ABC12345", "type": "car", "model": "toyota s corola" }` | Rider |
+| GET | `/user/driver-request` | Get all driver requests | None | Admin |
+| PATCH | `/user/availability` | Set driver availability | `{ "available": true }` | Driver |
+| PATCH | `/user/driver-request/:id/approve` | Approve driver request | None | Admin |
+| PATCH | `/user/:id/toggle-block` | Block/unblock user | None | Admin |
+| PATCH | `/user/:id` | Update user profile | `{ "name": "Updated Name", "phone": "0123456789" }` | All Roles |
+| GET | `/user/me` | Get current user info | None | All Roles |
+
+---
+
+### 🚘 Ride Routes (`/ride`)
+
+| Method | Endpoint | Description | Body (JSON Example) | Access |
+|--------|-----------|--------------|---------------------|--------|
+| POST | `/ride/request` | Request a ride | `{ "pickupLocation": "Uttara", "destination": "Dhanmondi", "fare": 350 }` | Rider |
+| GET | `/ride/all-rides` | Get all rides | None | Admin |
+| GET | `/ride/available-rides` | Get available rides | None | Driver |
+| GET | `/ride/earnings` | Get driver’s earnings | None | Driver |
+| GET | `/ride/my-rides` | Get rider’s rides | None | Rider |
+| GET | `/ride/driver-rides` | Get driver’s rides | None | Driver |
+| GET | `/ride/:id` | Get ride details by ID | None | All Roles |
+| PATCH | `/ride/:id/cancel-ride` | Cancel a ride | None | Rider |
+| PATCH | `/ride/:id/update-status` | Update ride status(picked_up, in_transit, cancelled etc) | `{ "status": "completed" }` | Driver |
+| PATCH | `/ride/:id/accept-ride` | Accept a ride request | None | Driver |
+
+---
+
+
+
 ## ⚙️ Setup Instructions
 
 1. **Clone repository**
@@ -92,52 +139,7 @@ src/
  ```bash
    npm run dev
  ```
-## API Endpoints Summary
 
-### Authentication
-| Method | Path | Auth | Description | Body |
-|--------|------|------|-------------|------|
-| POST | `/api/v1/auth/register` | Public | Register user (default role: RIDER) | `{ "name": "John Doe", "email": "john@example.com", "password": "123456", "role": "RIDER" (optional) }`
-| POST | `/api/v1/auth/login` | Public | Login and receive JWT | `{ "email": "john@example.com", "password": "123456" }`
-
-### Common Headers
-Authorization: Bearer <token>
-Content-Type: application/json
-
----
-
-### Rider
-| Method | Path | Auth | Description | Body |
-|--------|------|------|-------------|------|
-| POST | `/api/v1/ride/request` | Rider | Request a new ride | `{ "startLocation": "string", "endLocation": "string", "fare": number }` |
-| PATCH | `/api/v1/ride/:id/cancel-ride` | Rider | Cancel a ride (if allowed) | _none or optional reason_ |
-| GET | `/api/v1/ride/my-rides` | Rider | Get own ride history | _none_ |
-| GET | `/api/v1/ride/:id` | Rider (owner) / Admin / Driver | Get ride details | _none_ |
-
----
-
-### Driver
-| Method | Path | Auth | Description | Body |
-|--------|------|------|-------------|------|
-| POST | `/api/v1/user/become-driver` | Rider (to become driver) | Apply to become a driver (creates pending application) | `{ "vehicleInfo": { "type": "car"|"bike"|"cng"|"auto", "model": "string", "plateNum": "string" } }` |
-| PATCH | `/api/v1/user/availability` | Driver | Toggle availability status | _none_ |
-| PATCH | `/api/v1/ride/:id/accept-ride` | Driver | Accept a requested ride | _none_ |
-| PATCH | `/api/v1/ride/:id/reject` | Driver | Reject a ride request | _none_ |
-| GET | `/api/v1/ride/earnings` | Driver | View earnings history (from completed rides) | _none_ |
-| GET | `/api/v1/ride/available-rides` | Driver | List rides available to accept | _none_ |
-
-
----
-
-### Admin
-| Method | Path | Auth | Description | Body |
-|--------|------|------|-------------|------|
-| GET | `/api/v1/user/all-user` | Admin | List all users (optional `role` query param: `RIDER` or `DRIVER`) | _none_ |
-| PATCH | `/api/v1/user/driver-request/:id/approve` | Admin | Approve driver application | _none_ |
-| GET | `/api/v1/ride/all-rides` | Admin | List all rides | _none_ |
-| PATCH | `/api/v1/user/:id/toggle-block` | Admin | Block or unblock a user | _none_ |
-
----
 
 ### Notes
 - Role-based access is enforced via JWT in `Authorization` header.
