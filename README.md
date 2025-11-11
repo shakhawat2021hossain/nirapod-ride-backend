@@ -76,7 +76,7 @@ src/
 
 | Method | Endpoint | Description | Body (JSON Example) | Access |
 |--------|-----------|--------------|---------------------|--------|
-| POST | `/auth/register` | Register a new user | `{ "name": "John Doe", "email": "john@example.com", "password": "123456", "role": "rider" }` | Public |
+| POST | `/auth/register` | Register a new user | `{ "name": "John Doe", "email": "john@example.com", "password": "123456" }` | Public |
 | POST | `/auth/login` | Login with credentials | `{ "email": "john@example.com", "password": "123456" }` | Public |
 | POST | `/auth/logout` | Logout the current user | None | Authenticated |
 
@@ -90,7 +90,7 @@ src/
 | PATCH | `/user/change-password` | Change user password | `{ "oldPassword": "123456", "newPassword": "abcdef" }` | All Roles |
 | PATCH | `/user/become-driver` | Request to become a driver | `{ "plateNum": "ABC12345", "type": "car", "model": "toyota s corola" }` | Rider |
 | GET | `/user/driver-request` | Get all driver requests | None | Admin |
-| PATCH | `/user/availability` | Set driver availability | `{ "available": true }` | Driver |
+| PATCH | `/user/availability` | Set driver availability | None | Driver |
 | PATCH | `/user/driver-request/:id/approve` | Approve driver request | None | Admin |
 | PATCH | `/user/:id/toggle-block` | Block/unblock user | None | Admin |
 | PATCH | `/user/:id` | Update user profile | `{ "name": "Updated Name", "phone": "0123456789" }` | All Roles |
@@ -114,6 +114,25 @@ src/
 | PATCH | `/ride/:id/accept-ride` | Accept a ride request | None | Driver |
 
 ---
+
+
+## 🔐 Login Credentials
+
+Use the following demo accounts to explore the website:
+
+**Admin Account**  
+📧 Email: `admin@nirapod-ride.com`  
+🔑 Password: `HelloWorld`  
+
+**Rider Account**  
+📧 Email: `rider@ride.com`  
+🔑 Password: `123456`  
+
+**Driver Account**  
+📧 Email: `driver@ride.com`  
+🔑 Password: `123456`  
+
+> ⚠️ These credentials are for testing and demonstration purposes only.
 
 
 
