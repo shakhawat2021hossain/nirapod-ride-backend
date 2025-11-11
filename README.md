@@ -29,6 +29,7 @@ A **secure**, **role-based**, and **scalable backend API** for a ride-booking sy
 - Role-based route protection
 - Validation using Zod
 - Structured, modular codebase
+  
 
 ## 🗂️ Project Structure 
 ```plaintext
@@ -45,6 +46,8 @@ src/
 ├── server.ts
 ```
 
+
+
 ## 🧠 Core Concepts
 
 - **Roles**: 
@@ -55,10 +58,11 @@ src/
 - **Ride Status Flow**:
    requested → accepted → picked_up → in_transit → completed
 
-
 - **Driver Application**:
 - Rider applies → becomes `driver` role with a pending application.
 - Admin approves → driver can go online and accept rides.
+  
+
 
 ## 🛠️ Tech Stack
 
@@ -69,6 +73,7 @@ src/
 - bcrypt for password hashing
 - TypeScript
 - HTTP status codes via `http-status-codes`
+  
 
 
 ## API Endpoints
@@ -114,6 +119,7 @@ src/
 | PATCH | `/ride/:id/accept-ride` | Accept a ride request | None | Driver |
 
 ---
+
 
 
 ## 🔐 Login Credentials
