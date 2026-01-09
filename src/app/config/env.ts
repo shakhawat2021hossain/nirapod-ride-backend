@@ -11,5 +11,9 @@ export const envVars = {
     ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
     ADMIN_PASS: process.env.ADMIN_PASS as string,
     FRONTEND_URL: process.env.FRONTEND_URL as string,
+    REDIS_HOST: process.env.REDIS_HOST as string,
+    REDIS_PORT: Number(process.env.REDIS_PORT),
+    REDIS_USERNAME: process.env.REDIS_USERNAME as string,
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
 
 }

@@ -9,16 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.globalErrHandler = void 0;
-const env_1 = require("../config/env");
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const globalErrHandler = (error, req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const statusCode = error.statusCode || 500;
-    const message = error.message || "Something went Wrong (Global)";
-    res.status(statusCode).json({
-        success: false,
-        message,
-        stack: env_1.envVars.NODE_ENV === "development" ? error.stack : null
-    });
+exports.updateToken = void 0;
+const user_interface_1 = require("../modules/user/user.interface");
+const user_model_1 = require("../modules/user/user.model");
+const generateTokens_1 = require("./generateTokens");
+const updateToken = (id, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.findById(id);
+    if ((user === null || user === void 0 ? void 0 : user.role) === user_interface_1.Role.DRIVER) {
+        const tokens = yield (0, generateTokens_1.generateTokens)(user);
+        res.cookie("accessToken", tokens.accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+    }
 });
-exports.globalErrHandler = globalErrHandler;
+exports.updateToken = updateToken;

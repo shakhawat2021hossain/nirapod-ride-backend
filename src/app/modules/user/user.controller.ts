@@ -5,6 +5,7 @@ import httpStatus from "http-status-codes"
 import { catchAsync } from "../../utils/catchAsync"
 import { JwtPayload } from "jsonwebtoken"
 import { DriverRequestStatus } from "./user.interface"
+import { updateToken } from "../../utils/updateToken"
 
 
 
@@ -75,6 +76,9 @@ const approveDriverRequest = catchAsync(async (req: Request, res: Response) => {
     // console.log("params", req.params);
     const { status } = req.query
     const result = await userServices.approveDriverRequest(req.params.id, req.user as JwtPayload, status as DriverRequestStatus)
+    // if (status === DriverRequestStatus.APPROVED) {
+    //     updateToken(req.params.id, res)
+    // }
     sendResponse(res, {
         success: true,
         messaage: "Update role to driver!!!",

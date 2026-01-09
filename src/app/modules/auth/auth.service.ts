@@ -7,7 +7,7 @@ import { generateTokens } from "../../utils/generateTokens"
 
 
 const createUser = async (payload: IUser) => {
-    const { email, password, ...rest } = payload
+    const { email, password, role, ...rest } = payload
     const isExist = await User.findOne({ email: email })
     if (isExist) {
         throw new AppError(httpStatus.BAD_REQUEST, "User ALready exist")
@@ -17,7 +17,7 @@ const createUser = async (payload: IUser) => {
 
     const authProvider: IAuthProvider = { provider: "credentials", providerId: email as string }
 
-    const user = await User.create({ email, password: hashedPass, auths: [authProvider], ...rest })
+    const user = await User.create({ email, password: hashedPass, role, auths: [authProvider], ...rest })
     return user
 
 }

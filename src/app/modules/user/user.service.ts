@@ -89,8 +89,6 @@ const becomeDriver = async (decodedToken: JwtPayload, payload: Partial<IVehicle>
 
 
     return result;
-
-
 }
 
 const getDriverRequests = async () => {
@@ -113,6 +111,7 @@ const approveDriverRequest = async (id: string, decodedToken: JwtPayload, payloa
     user.driverRequest.status = payload;
     if (payload === DriverRequestStatus.APPROVED) {
         user.role = Role.DRIVER
+        user.isApproved = true
         user.vehicleInfo = user.driverRequest.vehicleInfo
         user.driverRequest.approvedAt = new Date();
         user.driverRequest.approvedBy = decodedToken.userId

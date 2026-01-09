@@ -1,4 +1,5 @@
 import z from "zod";
+import { Role } from "../user/user.interface";
 
 export const createUserZodSchema = z.object({
     name: z
@@ -10,6 +11,10 @@ export const createUserZodSchema = z.object({
         .string({ invalid_type_error: "email must be string" })
         .email({ message: "Invalid email address format." }),
 
+    role: z.enum([Role.RIDER, Role.DRIVER], {
+        invalid_type_error: "Role must be ADMIN, RIDER, or DRIVER",
+        required_error: "Role is required",
+    }),
     password: z
         .string({ invalid_type_error: "pass must be string" })
         .min(6, { message: "Password must be at least 6 characters long." }),

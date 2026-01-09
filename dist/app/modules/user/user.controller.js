@@ -72,6 +72,9 @@ const approveDriverRequest = (0, catchAsync_1.catchAsync)((req, res) => __awaite
     // console.log("params", req.params);
     const { status } = req.query;
     const result = yield user_service_1.userServices.approveDriverRequest(req.params.id, req.user, status);
+    // if (status === DriverRequestStatus.APPROVED) {
+    //     updateToken(req.params.id, res)
+    // }
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         messaage: "Update role to driver!!!",

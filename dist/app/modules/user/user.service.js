@@ -91,6 +91,7 @@ const approveDriverRequest = (id, decodedToken, payload) => __awaiter(void 0, vo
     user.driverRequest.status = payload;
     if (payload === user_interface_1.DriverRequestStatus.APPROVED) {
         user.role = user_interface_1.Role.DRIVER;
+        user.isApproved = true;
         user.vehicleInfo = user.driverRequest.vehicleInfo;
         user.driverRequest.approvedAt = new Date();
         user.driverRequest.approvedBy = decodedToken.userId;

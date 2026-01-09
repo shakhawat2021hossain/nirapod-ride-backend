@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createUserZodSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
+const user_interface_1 = require("../user/user.interface");
 exports.createUserZodSchema = zod_1.default.object({
     name: zod_1.default
         .string({ invalid_type_error: "Name must be string" })
@@ -13,6 +14,10 @@ exports.createUserZodSchema = zod_1.default.object({
     email: zod_1.default
         .string({ invalid_type_error: "email must be string" })
         .email({ message: "Invalid email address format." }),
+    role: zod_1.default.enum([user_interface_1.Role.RIDER, user_interface_1.Role.DRIVER], {
+        invalid_type_error: "Role must be ADMIN, RIDER, or DRIVER",
+        required_error: "Role is required",
+    }),
     password: zod_1.default
         .string({ invalid_type_error: "pass must be string" })
         .min(6, { message: "Password must be at least 6 characters long." }),
