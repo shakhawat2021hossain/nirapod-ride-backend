@@ -15,5 +15,11 @@ export const envVars = {
     REDIS_PORT: Number(process.env.REDIS_PORT),
     REDIS_USERNAME: process.env.REDIS_USERNAME as string,
     REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
+    NODEMAILER: {
+        SMTP_HOST: process.env.SMTP_HOST as string,
+        SMTP_PASS: process.env.SMTP_PASS as string,
+        SMTP_PORT: process.env.SMTP_PORT as string,
+        SMTP_USER: process.env.SMTP_USER as string,
+    }
 
 }
