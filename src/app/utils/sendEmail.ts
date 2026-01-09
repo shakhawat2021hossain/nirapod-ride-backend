@@ -5,7 +5,7 @@ import AppError from "./AppError";
 const transporter = nodemailer.createTransport({
     secure: false,
     auth: {
-        user: envVars.NODEMAILER?.SMTP_USER,
+        user: envVars.NODEMAILER.SMTP_USER,
         pass: envVars.NODEMAILER.SMTP_PASS
     },
     port: Number(envVars.NODEMAILER.SMTP_PORT),
